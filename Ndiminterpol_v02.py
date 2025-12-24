@@ -35,7 +35,8 @@ def intpND_extra(X_arr_list, Y_arr, x_targ_arr, order=1):
     w_list = []
     C_list = []
     for xx_da in X_arr_list:
-        d_tmp = np.sqrt( np.sum((x_targ_arr - xx_da)**2) )
+        #d_tmp = np.sqrt( np.sum((x_targ_arr - xx_da)**2) )
+        d_tmp = x_targ_arr - xx_da
         w_list.append(1/(d_tmp+0.0000001)**order)
         C_list.append(np.concatenate( [ [1],xx_da],))
         #print(C_list)
@@ -50,8 +51,9 @@ def intpND_extra(X_arr_list, Y_arr, x_targ_arr, order=1):
     # print('C_mat :',C_mat.shape)
     # print('c  : ', c.shape)
 
-    lambd_mat = W_mat * C_mat.T * np.linalg.inv(C_mat * W_mat * C_mat.T)*c
-    Y_targ = np.sum(lambd_mat*Y_arr)
+    lambd_mat = W_mat @ C_mat.T @ np.linalg.inv(C_mat @ W_mat @ C_mat.T)@c
+    Y_targ = np.sum(np.array(lambd_mat)*Y_arr)
+    print('Sum = ', np.sum(lambd_mat))
     return Y_targ
 
 # Test for intpND
@@ -65,7 +67,7 @@ if __name__== '__main__':
     Y_test = intpND(X_data, Y_test, np.array([1.5, 1.5]))
     print(Y_test)
     
-    x1 = np.array([1, 1,1])
+    x1 = np.array([1, 1, 1])
     x2 = np.array([1, 1, 2])
     x3 = np.array([1, 2, 1])
     x4 = np.array([2, 1, 1])
@@ -75,9 +77,9 @@ if __name__== '__main__':
     x8 = np.array([2, 2, 2])
 
     X_data = [x1,x2,x3,x4,x5,x6,x7,x8,]
-    Y_data2 = [1, 1, 1, 2, 1, 2, 2, 2, 2]
+    Y_data2 = [1, 1, 1, 2, 1, 2, 2, 2]
     # Only a function of x axis data
-    x_test2 = np.array([1.5, 1.2, 1.9])
+    x_test2 = np.array([1.5, 1.2, 1.50])
     Y_test2 = intpND(X_data, Y_data2, x_test2)
     print(Y_test2)
     
