@@ -94,6 +94,10 @@ def _inside_convex_hull(X, x, tri=None):
         raise RuntimeError("SciPy not available; cannot do convex hull membership robustly.")
     X = np.asarray(X, dtype=float)
     x = np.asarray(x, dtype=float).reshape(-1)
+    n_points, ndim = X.shape
+    if n_points < ndim + 1:
+        # Not enough points to construct Delaunay triangulation
+        return False
     if tri is None:
         tri = Delaunay(X)
     return tri.find_simplex(x) >= 0
